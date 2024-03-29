@@ -1,3 +1,5 @@
+**Important: This code is in the "proof-of-concept" state an not yet thoroughly tested or improved for efficiency** 
+
 # Torchcrawl Image
 The Torchcrawl Image package is a Python library that provides tools for web crawling and image analysis. It allows you to crawl web pages and extract images from them, storing them in a specified directory along with metadata. The package also provides functionality to analyze the metadata and load the images as a pytorch dataset for machine learning tasks.
 
