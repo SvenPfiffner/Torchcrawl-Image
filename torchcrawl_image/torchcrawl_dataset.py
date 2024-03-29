@@ -1,6 +1,7 @@
 from .xml import XMLData, XMLAtom
 import cv2
 from torch.utils.data import Dataset
+import os
 
 class TorchcrawlDataset(Dataset):
 
@@ -10,6 +11,24 @@ class TorchcrawlDataset(Dataset):
         data.load_from_xml(f"{working_dir}/data.xml")
         self.data = data
 
+    def get_data(self):
+        """
+        Returns the data in the dataset.
+
+        Returns:
+            list: A list of XMLAtom objects representing the data in the dataset.
+        """
+        return list(self.data.data.values())
+
+    def get_images(self):
+        """
+        Returns a list of images in the dataset.
+
+        Returns:
+            list: A list of images in the dataset.
+        """
+        return [cv2.imread(f"{self.working_dir}/imgs/{d.filename}") for d in self.data]
+
     def get_labels(self):
         """
         Returns a list of labels in the dataset.
@@ -18,6 +37,16 @@ class TorchcrawlDataset(Dataset):
             list: A list of labels in the dataset.
         """
         return list(set([d.label for d in self.data]))
+
+    def refresh(self):
+        """
+        Refreshes the dataset by removing images no longer present in the working directory
+        from both the dataset and the XML file.
+        """
+        for d in self.data:
+            if not os.path.exists(f"{self.working_dir}/imgs/{d.filename}"):
+                self.data.remove_entry(d)
+        self.data.save_to_xml(f"{self.working_dir}/data.xml")
 
     def label_data(self, label_function, filter=None):
         """
@@ -60,6 +89,6 @@ class TorchcrawlDataset(Dataset):
         Returns:
             tuple: A tuple containing the image and its corresponding label.
         """
-        d = list(self.data.values())[idx] # TODO: Make this more efficient
+        d = list(self.data.data.values())[idx] # TODO: Make this more efficient
         img = cv2.imread(f"{self.working_dir}/imgs/{d.filename}")
         return img, d.label

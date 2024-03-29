@@ -3,7 +3,7 @@ class XMLData:
     Represents a collection of XML data entries.
 
     Attributes:
-        _data (dict): A dictionary to store the XML data entries.
+        data (dict): A dictionary to store the XML data entries.
 
     Methods:
         add_entry(atom): Adds an XMLAtom entry to the XMLData.
@@ -17,12 +17,12 @@ class XMLData:
         __str__(): Returns a string representation of the XMLData.
     """
 
-    def __init__(self, _data={}):
+    def __init__(self, data={}):
         """
         Initializes an instance of the XMLData class.
         """
-        self._data = _data
-        self.size = len(_data)
+        self.data = data
+        self.size = len(data)
 
     def add_entry(self, atom):
         """
@@ -32,7 +32,7 @@ class XMLData:
             atom (XMLAtom): The XMLAtom object to add.
 
         """
-        self._data[atom.filename] = atom
+        self.data[atom.filename] = atom
         self.size += 1
 
     def remove_entry(self, atom):
@@ -43,7 +43,7 @@ class XMLData:
             atom (XMLAtom): The XMLAtom object to remove.
 
         """
-        del self._data[atom.filename]
+        del self.data[atom.filename]
         self.size -= 1
 
     def filter_by_shape(self, shape):
@@ -96,7 +96,7 @@ class XMLData:
             XMLData: A new XMLData object containing the filtered entries.
 
         """
-        return XMLData({k: v for k, v in self._data.items() if filter_func(v)})
+        return XMLData({k: v for k, v in self.data.items() if filter_func(v)})
 
     def save_to_xml(self, path):
         """
@@ -119,7 +119,7 @@ class XMLData:
         """
         with open(path, "r") as f:
             data = f.read()
-            self._data = {}
+            self.data = {}
             for entry in data.split("<img>")[1:]:
                 filename = entry.split("<filename>")[1].split("</filename>")[0]
                 dtype = entry.split("<type>")[1].split("</type>")[0]
@@ -139,7 +139,7 @@ class XMLData:
             str: The string representation of the XMLData.
 
         """
-        return "".join(["<img>" + str(atom) + "</img>" for atom in self._data.values()])
+        return "".join(["<img>" + str(atom) + "</img>" for atom in self.data.values()])
 
     def __iter__(self):
         """
@@ -148,7 +148,7 @@ class XMLData:
         Returns:
             iter: An iterator over the XMLData entries.
         """
-        return iter(self._data.values())
+        return iter(self.data.values())
     
 class XMLAtom:
     """
